@@ -18,11 +18,15 @@ app.use(express.json())
 // всё что будет начинаться /api/contacts и после /api/contacts будет описано в файле contactsRouter
 app.use('/api/contacts', contactsRouter)
 
-app.use((req, res) => {
+// Обработчик нелегетимного ввода параметра строки маршрута
+// req не используются, потому нижнее подчёркивание
+app.use((_req, res) => {
   res.status(404).json({ message: 'Not found' })
 })
 
-app.use((err, req, res, next) => {
+// Обработчик ошибок
+// req и next не используются, потому нижнее подчёркивание
+app.use((err, _req, res, _next) => {
   res.status(500).json({ message: err.message })
 })
 
