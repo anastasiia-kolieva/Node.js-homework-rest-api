@@ -1,7 +1,20 @@
-// const fs = require('fs/promises')
-// const contacts = require('./contacts.json')
+const fs = require('fs').promises
+const path = require("path");
+// import shortid from "shortid";
 
-const listContacts = async () => {}
+const contactsPath = path.join(__dirname, "/contacts.json");
+
+const listContacts = async () => {
+  try {
+    // данные с прочитки файла contacts.json
+    const data = await fs.readFile(contactsPath);
+
+    // JSON.parse необходимо чтоб распарсить в обьект, потому что там строка сформированна
+     return JSON.parse(data.toString());
+  } catch (error) {
+    console.log (error);
+  }
+}
 
 const getContactById = async (contactId) => {}
 
