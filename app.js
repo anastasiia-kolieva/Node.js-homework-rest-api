@@ -11,6 +11,7 @@ const app = express()
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short'
 // запуск логгера
 app.use(logger(formatsLogger))
+// включён cors (кросcдоменные запросы)
 app.use(cors())
 app.use(express.json())
 
