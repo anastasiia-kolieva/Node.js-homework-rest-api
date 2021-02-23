@@ -52,6 +52,18 @@ router.post("/", async (req, res, next) => {
     // req.body это представление отсылаемого/создаваемого обьекта
     // передаем req.body в addContact
     const newContact = await contacts.addContact(req.body);
+
+    const { name, email, phone } = req.body;
+    // Если в body нет каких-то обязательных полей,
+    // возвращает json с ключом {"message": "missing required name field"} и статусом 400
+    if (!name || !email || !phone) {
+      return res.json({
+        status: "error",
+        code: 400,
+        message: "missing required name field",
+      });
+    }
+
     // res.status(201) обязательно
     return res.status(201).json({
       status: "success",
@@ -94,9 +106,46 @@ router.delete("/:contactId", async (req, res, next) => {
   }
 });
 
-// сюда приходит json или какие-то параметры
+// обновить отдел ьное свойство
 router.patch("/:contactId", async (req, res, next) => {
-  res.json({ message: "template message" });
+  try {
+    // В req.params будет свойство contactId
+    const contact = await contacts.updateContact(
+      req.params.contactId,
+      req.body
+    );
+
+    const { name, email, phone } = req.body;
+    if (!(name && email && phone)) {
+      return res.json({
+        status: "error",
+        code: 400,
+        message: "Missing fields",
+      });
+    }
+
+    // если искомый контакт есть(пришёл из getContactById)
+    if (contact) {
+      return res.json({
+        status: "success",
+        code: 200,
+        message: "Contact updated",
+        data: {
+          contact,
+        },
+      });
+      // если искомый контакт НЕ пришёл из getContactById
+    } else {
+      return res.status(404).json({
+        status: "error",
+        code: 404,
+        message: "Not found",
+      });
+    }
+  } catch (error) {
+    // пробросить дальше ошибку
+    next(error);
+  }
 });
 
 module.exports = router;

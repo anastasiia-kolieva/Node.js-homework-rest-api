@@ -35,7 +35,6 @@ const removeContact = async (contactId) => {
     const data = await fs.readFile(contactsPath);
     const parseData = JSON.parse(data.toString());
     const deletedContact = parseData.find((contact) => contact.id == contactId);
-    console.log(deletedContact);
 
     const filteredContacts = parseData.filter(
       (contact) => contact.id != contactId
@@ -71,7 +70,28 @@ const addContact = async ({ name, email, phone }) => {
   }
 };
 
-const updateContact = async (contactId, body) => {};
+const updateContact = async (contactId, body) => {
+  try {
+    const data = await fs.readFile(contactsPath);
+    // данные с прочитки файла contacts.json
+    const parseData = JSON.parse(data.toString());
+    //в данных с прочитки файла contacts.json ищем необходимый контакт по id
+    const contact = parseData.find((contact) => contact.id == contactId);
+    // в обновлённый контакт(updatedContact) распыляем свойства найденного по id контакта,
+    // и поверх приходящие новые значения body
+    const updatedContact = { ...contact, ...body };
+
+    const filteredContacts = parseData.filter(
+      (contact) => contact.id != contactId
+    );
+
+    const updatedArrayOfContacts = [updatedContact, ...filteredContacts];
+    await fs.writeFile(contactsPath, JSON.stringify(updatedArrayOfContacts));
+    return updatedContact;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 module.exports = {
   listContacts,
