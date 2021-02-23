@@ -23,15 +23,36 @@ const getContactById = async (contactId) => {
     const parseData = JSON.parse(data.toString());
 
     //в данных с прочитки файла contacts.json ищем необходимый контакт по id
-    const contact = parseData.find((contact) => contact.id === contactId);
-    console.log(contact);
+    const contact = parseData.find((contact) => contact.id == contactId);
     return contact;
   } catch (error) {
     console.log(error);
   }
 };
 
-const removeContact = async (contactId) => {};
+const removeContact = async (contactId) => {
+  try {
+    const data = await fs.readFile(contactsPath);
+    const parseData = JSON.parse(data.toString());
+    const deletedContact = parseData.find((contact) => contact.id == contactId);
+    console.log(deletedContact);
+
+    const filteredContacts = parseData.filter(
+      (contact) => contact.id != contactId
+    );
+
+    if (filteredContacts.length !== parseData.length) {
+      // если отфильтрованный массив контактов НЕ равен изначальному массиву, значит искомый контакт убрали
+      // перезаписываем файл (путьcontactsPath ) с контактами. В него записываем масив filteredContacts
+      await fs.writeFile(contactsPath, JSON.stringify(filteredContacts));
+      return deletedContact;
+    } else {
+      return;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 // c req.body приходит name, email, phone нового контакта
 const addContact = async ({ name, email, phone }) => {

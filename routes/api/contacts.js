@@ -22,7 +22,7 @@ router.get("/", async (_req, res, next) => {
 router.get("/:contactId", async (req, res, next) => {
   try {
     // В req.params будет свойство contactId
-    const contact  = await contacts.getContactById(req.params.contactId);
+    const contact = await contacts.getContactById(req.params.contactId);
     // если искомый контакт есть(пришёл из getContactById)
     if (contact) {
       return res.json({
@@ -37,7 +37,7 @@ router.get("/:contactId", async (req, res, next) => {
       return res.status(404).json({
         status: "error",
         code: 404,
-        "message": "Not found",
+        message: "Not found",
       });
     }
   } catch (error) {
@@ -67,7 +67,31 @@ router.post("/", async (req, res, next) => {
 
 // сюда приходит json или какие-то параметры
 router.delete("/:contactId", async (req, res, next) => {
-  res.json({ message: "template message" });
+  try {
+    // В req.params будет свойство contactId
+    const contact = await contacts.removeContact(req.params.contactId);
+    // если искомый контакт есть(пришёл из getContactById)
+    if (contact) {
+      return res.json({
+        status: "success",
+        code: 200,
+        message: "contact deleted",
+        data: {
+          contact,
+        },
+      });
+      // если искомый контакт НЕ пришёл из getContactById
+    } else {
+      return res.status(404).json({
+        status: "error",
+        code: 404,
+        message: "Not found",
+      });
+    }
+  } catch (error) {
+    // пробросить дальше ошибку
+    next(error);
+  }
 });
 
 // сюда приходит json или какие-то параметры
