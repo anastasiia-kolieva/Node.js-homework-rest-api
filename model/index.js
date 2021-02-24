@@ -1,16 +1,17 @@
 const fs = require("fs").promises;
 const path = require("path");
 const shortid = require("shortid");
+const { readData, parceData, writeData } = require("../helpers/helpers.js");
 
 const contactsPath = path.join(__dirname, "/contacts.json");
 
 const listContacts = async () => {
   try {
     // данные с прочитки файла contacts.json
-    const data = await fs.readFile(contactsPath);
+    const data = await readData(contactsPath);
 
     // JSON.parse необходимо чтоб распарсить в обьект, потому что там строка сформированна
-    return JSON.parse(data.toString());
+    return parceData(data);
   } catch (error) {
     console.log(error);
   }
@@ -18,9 +19,8 @@ const listContacts = async () => {
 
 const getContactById = async (contactId) => {
   try {
-    const data = await fs.readFile(contactsPath);
-    // данные с прочитки файла contacts.json
-    const parseData = JSON.parse(data.toString());
+    const data = await readData(contactsPath);
+    const parseData = parceData(data);
 
     //в данных с прочитки файла contacts.json ищем необходимый контакт по id
     const contact = parseData.find((contact) => contact.id == contactId);
@@ -32,8 +32,8 @@ const getContactById = async (contactId) => {
 
 const removeContact = async (contactId) => {
   try {
-    const data = await fs.readFile(contactsPath);
-    const parseData = JSON.parse(data.toString());
+    const data = await readData(contactsPath);
+    const parseData = parceData(data);
     const deletedContact = parseData.find((contact) => contact.id == contactId);
 
     const filteredContacts = parseData.filter(
@@ -43,7 +43,8 @@ const removeContact = async (contactId) => {
     if (filteredContacts.length !== parseData.length) {
       // если отфильтрованный массив контактов НЕ равен изначальному массиву, значит искомый контакт убрали
       // перезаписываем файл (путьcontactsPath ) с контактами. В него записываем масив filteredContacts
-      await fs.writeFile(contactsPath, JSON.stringify(filteredContacts));
+      // await fs.writeFile(contactsPath, JSON.stringify(filteredContacts));
+      await writeData(contactsPath, filteredContacts);
       return deletedContact;
     } else {
       return;
@@ -56,13 +57,14 @@ const removeContact = async (contactId) => {
 // c req.body приходит name, email, phone нового контакта
 const addContact = async ({ name, email, phone }) => {
   try {
-    const data = await fs.readFile(contactsPath);
-    const parseData = JSON.parse(data.toString());
+    const data = await readData(contactsPath);
+    const parseData = parceData(data);
     const newContact = { id: shortid.generate(), name, email, phone };
 
     parseData.push(newContact);
     // перезаписываем файл (путь contactsPath ) с контактами. В него записываем масив parseData
-    await fs.writeFile(contactsPath, JSON.stringify(parseData));
+    // await fs.writeFile(contactsPath, JSON.stringify(parseData));
+    await writeData(contactsPath, parseData);
     // отправляем новый созданный контакт
     return newContact;
   } catch (error) {
@@ -72,9 +74,9 @@ const addContact = async ({ name, email, phone }) => {
 
 const updateContact = async (contactId, body) => {
   try {
-    const data = await fs.readFile(contactsPath);
+    const data = await readData(contactsPath);
     // данные с прочитки файла contacts.json
-    const parseData = JSON.parse(data.toString());
+    const parseData = parceData(data);
     //в данных с прочитки файла contacts.json ищем необходимый контакт по id
     const contact = parseData.find((contact) => contact.id == contactId);
     // в обновлённый контакт(updatedContact) распыляем свойства найденного по id контакта,
@@ -86,7 +88,8 @@ const updateContact = async (contactId, body) => {
     );
 
     const updatedArrayOfContacts = [updatedContact, ...filteredContacts];
-    await fs.writeFile(contactsPath, JSON.stringify(updatedArrayOfContacts));
+    // await fs.writeFile(contactsPath, JSON.stringify(updatedArrayOfContacts));
+    await writeData(contactsPath, updatedArrayOfContacts);
     return updatedContact;
   } catch (error) {
     console.log(error);

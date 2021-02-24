@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const contacts = require("../../model/index.js");
+const validate = require("./validation.js");
 
 router.get("/", async (_req, res, next) => {
   try {
@@ -47,7 +48,8 @@ router.get("/:contactId", async (req, res, next) => {
 });
 
 // создание контакта
-router.post("/", async (req, res, next) => {
+// validate.createContact - валидация (промежуточное ПО)
+router.post("/", validate.createContact, async (req, res, next) => {
   try {
     // req.body это представление отсылаемого/создаваемого обьекта
     // передаем req.body в addContact
@@ -60,7 +62,7 @@ router.post("/", async (req, res, next) => {
       return res.json({
         status: "error",
         code: 400,
-        message: "missing required name field",
+        message: "Missing required field",
       });
     }
 
@@ -106,8 +108,9 @@ router.delete("/:contactId", async (req, res, next) => {
   }
 });
 
-// обновить отдел ьное свойство
-router.patch("/:contactId", async (req, res, next) => {
+// обновить отдельное свойство
+// validate.updateContact - валидация (промежуточное ПО)
+router.patch("/:contactId", validate.updateContact, async (req, res, next) => {
   try {
     // В req.params будет свойство contactId
     const contact = await contacts.updateContact(
@@ -116,11 +119,11 @@ router.patch("/:contactId", async (req, res, next) => {
     );
 
     const { name, email, phone } = req.body;
-    if (!(name && email && phone)) {
+    if (!(name || email || phone)) {
       return res.json({
         status: "error",
         code: 400,
-        message: "Missing fields",
+        message: "Missing required field",
       });
     }
 
