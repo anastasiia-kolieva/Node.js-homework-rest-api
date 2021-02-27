@@ -1,12 +1,21 @@
 // запуск сервера выноситься отдельно, потому что подключение баз данных хорошо сделать в запуске сервера
-// (если базу данных не получилось инициализировать, тогда мы не стартуем), 
+// (если базу данных не получилось инициализировать, тогда мы не стартуем),
 // а так же с учётом будущего импорта приложения для тестирование(там будет свой сервер)
-const app = require('../app')
+const app = require("../app");
+// подключение к базе данных
+const db = require("../model/db");
 // константы должны быть большими буквами
 // не можем жёстко задать порт, потому что тот же хероку будет выдавать порт
 // вначале смотрим есть ли переменная окружения process.env.PORT, если её нет, тогда мы выдаём 3000
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-  console.log(`Server running. Use our API on port: ${PORT}`)
-})
+// если подключение к базе данных удачно, будет конекшен
+db.then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server running. Use our API on port: ${PORT}`);
+  });
+}).catch((error) => {
+  console.log(`Server not running. Error message: ${error.message}`);
+  // завершить процесс используя process.exit(1)
+  process.exit(1);
+});

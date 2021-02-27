@@ -55,17 +55,6 @@ router.post("/", validate.createContact, async (req, res, next) => {
     // передаем req.body в addContact
     const newContact = await contacts.addContact(req.body);
 
-    const { name, email, phone } = req.body;
-    // Если в body нет каких-то обязательных полей,
-    // возвращает json с ключом {"message": "missing required name field"} и статусом 400
-    if (!name || !email || !phone) {
-      return res.json({
-        status: "error",
-        code: 400,
-        message: "Missing required field",
-      });
-    }
-
     // res.status(201) обязательно
     return res.status(201).json({
       status: "success",
@@ -117,15 +106,6 @@ router.patch("/:contactId", validate.updateContact, async (req, res, next) => {
       req.params.contactId,
       req.body
     );
-
-    const { name, email, phone } = req.body;
-    if (!(name || email || phone)) {
-      return res.json({
-        status: "error",
-        code: 400,
-        message: "Missing required field",
-      });
-    }
 
     // если искомый контакт есть(пришёл из getContactById)
     if (contact) {
