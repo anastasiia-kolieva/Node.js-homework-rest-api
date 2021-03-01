@@ -16,7 +16,7 @@ const db = mongoose.connect(uriDb, {
 //   когда connect произошёл, у самого connect есть обработчик событий connection
 // событие connected - то что мы присоеденились к базе данных
 mongoose.connection.on("connected", () => {
-  console.log("Mongoose connected to db");
+  console.log("Database connection successful");
 });
 
 // при возникновении ошибки вовремя connect
@@ -29,27 +29,13 @@ mongoose.connection.on("disconnected", () => {
   console.log("Mongoose disconnected from db");
 });
 
-// const blogSchema = new Schema({
-//   title:  String, // String is shorthand for {type: String}
-//   author: String,
-//   body:   String,
-//   comments: [{ body: String, date: Date }],
-//   date: { type: Date, default: Date.now },
-//   hidden: Boolean,
-//   meta: {
-//     votes: Number,
-//     favs:  Number
-//   }
-// });
-
 // при принудительной остановке приложения, чтоб коннекшены не накапливались
 process.on("SIGINT", async () => {
   // закрываем соединение
-  mongoose.connection.close(() => {
+  await mongoose.connection.close();
     console.log("Connection for db closed");
     // завершить процесс используя process.exit(1)
     process.exit(1);
   });
-});
 
 module.exports = db;
