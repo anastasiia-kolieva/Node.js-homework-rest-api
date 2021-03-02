@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const contacts = require("../../model/index.js");
-const validate = require("./validation.js");
 
 router.get("/", async (_req, res, next) => {
   try {
@@ -49,7 +48,7 @@ router.get("/:contactId", async (req, res, next) => {
 
 // создание контакта
 // validate.createContact - валидация (промежуточное ПО)
-router.post("/", validate.createContact, async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   try {
     // req.body это представление отсылаемого/создаваемого обьекта
     // передаем req.body в addContact
@@ -99,7 +98,7 @@ router.delete("/:contactId", async (req, res, next) => {
 
 // обновить отдельное свойство
 // validate.updateContact - валидация (промежуточное ПО)
-router.patch("/:contactId", validate.updateContact, async (req, res, next) => {
+router.patch("/:contactId", async (req, res, next) => {
   try {
     // В req.params будет свойство contactId
     const contact = await contacts.updateContact(
