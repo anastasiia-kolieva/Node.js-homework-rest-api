@@ -2,7 +2,7 @@ const Contact = require("./schemas/contact");
 
 const listContacts = async () => {
   try {
-    const data = await Contact.find({});
+    const data = await Contact.find({},{"__v":0});
     return data;
   } catch (error) {
     console.log(error);
@@ -11,7 +11,7 @@ const listContacts = async () => {
 
 const getContactById = async (contactId) => {
   try {
-    const data = Contact.find({ _id: contactId });
+    const data = Contact.findOne({ _id: contactId }).select("-__v");
     return data;
   } catch (error) {
     console.log(error);
