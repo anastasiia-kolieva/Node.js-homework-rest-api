@@ -29,10 +29,7 @@ const contactSchema = new Schema(
       default: "",
     },
   },
-  // отключить вывод версий
-  { versionKey: false, 
-    // 
-    timestamps:true }
+  { timestamps:true }
 );
 
 const Contact = model("contact", contactSchema);
