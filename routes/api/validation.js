@@ -21,6 +21,11 @@ const schemaUpdateContact = Joi.object({
   password: Joi.string(),
 }).min(1);
 
+// схема валидации id
+const schemaValidationIdOfContact = Joi.object({
+  _id: Joi.string().max(24).required(),
+});
+
 const validate = (schema, obj, next) => {
   const { error } = schema.validate(obj);
   if (error) {
@@ -41,4 +46,9 @@ module.exports.createContact = (req, res, next) => {
 // миделвар
 module.exports.updateContact = (req, res, next) => {
   return validate(schemaUpdateContact, req.body, next);
+};
+
+// миделвар
+module.exports.validationIdOfContact = (req, res, next) => {
+  return validate(schemaValidationIdOfContact, req.body, next);
 };
