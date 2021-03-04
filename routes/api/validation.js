@@ -50,5 +50,5 @@ module.exports.updateContact = (req, res, next) => {
 
 // миделвар
 module.exports.validationIdOfContact = (req, res, next) => {
-  return validate(schemaValidationIdOfContact, req.body, next);
+  return validate(schemaValidationIdOfContact, req.params, next);
 };
