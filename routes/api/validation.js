@@ -23,7 +23,7 @@ const schemaUpdateContact = Joi.object({
 
 // схема валидации id
 const schemaValidationIdOfContact = Joi.object({
-  _id: Joi.string().max(24).required(),
+  _id: Joi.string().length(24).alphanum().required(),
 });
 
 const validate = (schema, obj, next) => {
