@@ -7,6 +7,7 @@ const schemaCreateContact = Joi.object({
   phone: Joi.string()
     .pattern(/^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?$/)
     .required(),
+  password: Joi.string().required(),
 });
 
 // схема для обновления контака
@@ -17,6 +18,7 @@ const schemaUpdateContact = Joi.object({
   phone: Joi.string()
     .pattern(/^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?$/)
     .optional(),
+  password: Joi.string(),
 }).min(1);
 
 const validate = (schema, obj, next) => {
