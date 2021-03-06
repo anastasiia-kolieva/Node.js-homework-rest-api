@@ -1,4 +1,6 @@
 const Joi = require("joi");
+// joi-objectid
+Joi.objectId = require("joi-objectid")(Joi);
 
 // схема на создание контака
 const schemaCreateContact = Joi.object({
@@ -22,8 +24,13 @@ const schemaUpdateContact = Joi.object({
 }).min(1);
 
 // схема валидации id
+// const schemaValidationIdOfContact = Joi.object({
+//   contactId: Joi.string().length(24).alphanum().required(),
+// });
+
+// валидация с применением joi-objectid
 const schemaValidationIdOfContact = Joi.object({
-  contactId: Joi.string().length(24).alphanum().required(),
+  contactId: Joi.objectId(),
 });
 
 const validate = (schema, obj, next) => {
