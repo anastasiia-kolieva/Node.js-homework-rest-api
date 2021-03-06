@@ -3,8 +3,10 @@ const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
 
-// подключение Роутера
+// подключение Роутера Contacts
 const contactsRouter = require("./routes/api/contacts/index");
+// подключение Роутера Users
+const usersRouter = require("./routes/api/users/index");
 
 const app = express();
 
@@ -18,6 +20,8 @@ app.use(express.json());
 // если придёт сюда на /api/contacts(по ТЗ), то иди в contactsRouter
 // всё что будет начинаться /api/contacts и после /api/contacts будет описано в файле contactsRouter
 app.use("/api/contacts", contactsRouter);
+// всё что будет начинаться /api/users и после /api/users будет описано в файле usersRouter
+app.use("/api/users", usersRouter);
 
 // Обработчик нелегетимного ввода параметра строки маршрута
 // req не используются, потому нижнее подчёркивание
