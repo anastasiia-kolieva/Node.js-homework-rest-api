@@ -4,7 +4,7 @@ const logger = require("morgan");
 const cors = require("cors");
 
 // подключение Роутера
-const contactsRouter = require("./routes/api/contacts");
+const contactsRouter = require("./routes/api/contacts/index");
 
 const app = express();
 
