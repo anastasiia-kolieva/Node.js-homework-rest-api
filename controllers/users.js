@@ -8,7 +8,7 @@ const SECRET_KEY = process.env.JWT_SECRET;
 const registration = async (_req, res, next) => {
   try {
     //  пришло от заполнения формы
-    const { name, email, password, subscription } = req.body;
+    const { email } = req.body;
     // перед тем как регестрировать пользователя, его нужно найти (юзера)
     const user = await users.findByEmail(email);
     // если пользователь есть (конфликт имен)
@@ -23,13 +23,16 @@ const registration = async (_req, res, next) => {
       });
     }
 
-    // В responce массив обектов контактов распарсенный
-    const responce = await contacts.listContacts();
-    return res.json({
+    // создание нового пользователя
+    const newUser = await users.create(req.body);
+    return res.status(HttpCode.CREATED).json({
       status: "success",
-      code: 200,
+      code: HttpCode.CREATED,
       data: {
-        responce,
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+        subscription: newUser.subscription,
       },
     });
   } catch (error) {
