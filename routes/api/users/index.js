@@ -3,13 +3,14 @@ const router = express.Router();
 const usersControllers = require("../../../controllers/users");
 const validate = require("./validation.js");
 
-// router
-//   .get("/", contactsControllers.getAll)
-//   .post("/", validate.createContact, contactsControllers.create);
+router
+// Создать ендпоинт /auth/register
+.post("/auth/register")
 
-// router
-//   .get("/:contactId", validate.validationIdOfContact, contactsControllers.getById)
-//   .delete("/:contactId", validate.validationIdOfContact, contactsControllers.remove)
-//   .patch("/:contactId", validate.updateContact, contactsControllers.update);
+// Создать ендпоинт /auth/login
+.post("/auth/login")
+
+// Создать ендпоинт /auth/logout
+.post("/auth/logout");
 
 module.exports = router;
