@@ -41,6 +41,12 @@ const registration = async (_req, res, next) => {
   }
 };
 
+const login = async (_req, res, next) => {};
+
+const logout = async (_req, res, next) => {};
+
 module.exports = {
   registration,
+  login,
+  logout,
 };
