@@ -1,5 +1,4 @@
-const mongoose = require("mongoose");
-const { Schema, model } = mongoose;
+const { Schema, model } = require("mongoose");
 const bcrypt = require("bcryptjs");
 // сколько раз будем солить пароль(минимум 6)
 const SALT_WORK_FACTOR = 8;
@@ -11,7 +10,6 @@ const userSchema = new Schema(
       type: String,
       minlenght: 3,
       default: "Guest",
-      required: [true, "Set name of user"],
     },
     email: {
       type: String,
@@ -32,11 +30,9 @@ const userSchema = new Schema(
     },
     subscription: {
       type: String,
-      enum: {
-        value: [Subscription.FREE, Subscription.PRO, Subscription.PREMIUM],
-        //   сообщение об ошибке
-        message: "It isn't allowed",
-      },
+      enum: [Subscription.FREE, Subscription.PRO, Subscription.PREMIUM],
+      //   сообщение об ошибке
+      message: "It isn't allowed",
       default: Subscription.FREE,
     },
     token: {
@@ -44,7 +40,7 @@ const userSchema = new Schema(
       default: null,
     },
   },
-  { timestamps: true }
+  { versionKey: false, timestamps: true }
 );
 
 // когда вызывается метод save, этот код сработает

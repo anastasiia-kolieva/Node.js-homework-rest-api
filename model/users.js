@@ -5,7 +5,10 @@ const findByEmail = async (email) => {
 };
 
 const findById = async (id) => {
-  return await User.findOne({ _id: id }).select("-__v");
+    // Что бы не передавать явно указанное название поля - _id можно использовать функции, 
+    // в названии которых уже содержится слово id. Это специальные - именованные функции для 
+    // поиска по полю id
+  return await User.findById({ id }).select("-__v");
 };
 
 const create = async ({ name, email, password, subscription }) => {
@@ -14,7 +17,9 @@ const create = async ({ name, email, password, subscription }) => {
 };
 
 const updateToken = async (id, token) => {
-  return await User.updateOne({ _id: id }, { token });
+    // тут явно указывается название поля, по которому будет  
+    // производится поиск по базе данных - ById
+  return await User.findByIdAndUpdate({ id }, { token });
 };
 
 module.exports = {
