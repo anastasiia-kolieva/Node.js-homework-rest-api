@@ -2,8 +2,9 @@ const contacts = require("../model/contacts");
 
 const getAll = async (_req, res, next) => {
   try {
+    const userId = req.user.id;
     // В responce массив обектов контактов распарсенный
-    const responce = await contacts.listContacts();
+    const responce = await contacts.listContacts(userId);
     return res.json({
       status: "success",
       code: 200,
@@ -19,8 +20,9 @@ const getAll = async (_req, res, next) => {
 
 const getById = async (req, res, next) => {
   try {
+    const userId = req.user.id;
     // В req.params будет свойство contactId
-    const contact = await contacts.getContactById(req.params.contactId);
+    const contact = await contacts.getContactById(req.params.contactId, userId);
     // если искомый контакт есть(пришёл из getContactById)
     if (contact) {
       return res.json({
@@ -47,9 +49,13 @@ const getById = async (req, res, next) => {
 // создание контакта
 const create = async (req, res, next) => {
   try {
+    const userId = req.user.id;
     // req.body это представление отсылаемого/создаваемого обьекта
     // передаем req.body в addContact
-    const newContact = await contacts.addContact(req.body);
+    const newContact = await contacts.addContact({
+      ...req.body,
+      owner: userId,
+    });
 
     // res.status(201) обязательно
     return res.status(201).json({
@@ -67,8 +73,9 @@ const create = async (req, res, next) => {
 // сюда приходит json или какие-то параметры
 const remove = async (req, res, next) => {
   try {
+    const userId = req.user.id;
     // В req.params будет свойство contactId
-    const contact = await contacts.removeContact(req.params.contactId);
+    const contact = await contacts.removeContact(req.params.contactId, userId);
     // если искомый контакт есть(пришёл из getContactById)
     if (contact) {
       return res.json({
@@ -97,10 +104,12 @@ const remove = async (req, res, next) => {
 // validate.updateContact - валидация (промежуточное ПО)
 const update = async (req, res, next) => {
   try {
+    const userId = req.user.id;
     // В req.params будет свойство contactId
     const contact = await contacts.updateContact(
       req.params.contactId,
-      req.body
+      req.body,
+      userId
     );
 
     // если искомый контакт есть(пришёл из getContactById)
