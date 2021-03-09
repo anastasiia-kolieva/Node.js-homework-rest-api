@@ -79,7 +79,14 @@ const login = async (req, res, next) => {
   }
 };
 
-const logout = async (req, res, next) => {};
+const logout = async (req, res, next) => {
+  const userId = req.user.id;
+  // В базу данный отправляем новый обнулённый токен
+  await users.updateToken(userId, null);
+  return res.status(HttpCode.NO_CONTENT).json({
+    message: "Nothung",
+  });
+};
 
 module.exports = {
   registration,

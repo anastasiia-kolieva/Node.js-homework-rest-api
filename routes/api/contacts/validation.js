@@ -1,6 +1,7 @@
 const Joi = require("joi");
 // joi-objectid
 Joi.objectId = require("joi-objectid")(Joi);
+const { HttpCode } = require("../../../helpers/constants");
 
 // схема на создание контака
 const schemaCreateContact = Joi.object({
@@ -38,7 +39,7 @@ const validate = (schema, obj, next) => {
   if (error) {
     const [{ message }] = error.details;
     return next({
-      status: 400,
+      status: HttpCode.BAD_REQUEST,
       message: `Filed: ${message.replace(/"/g, "")}`,
     });
   }
