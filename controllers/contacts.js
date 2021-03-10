@@ -1,14 +1,16 @@
-const contacts = require("../model/index.js");
+const contacts = require("../model/contacts");
+const { HttpCode } = require("../helpers/constants");
 
-const getAll = async (_req, res, next) => {
+const getAll = async (req, res, next) => {
   try {
+    const userId = req.user.id;
     // В responce массив обектов контактов распарсенный
-    const responce = await contacts.listContacts();
+    const responce = await contacts.listContacts(userId, req.query);
     return res.json({
       status: "success",
-      code: 200,
+      code: HttpCode.OK,
       data: {
-        responce,
+        ...responce,
       },
     });
   } catch (error) {
@@ -19,13 +21,14 @@ const getAll = async (_req, res, next) => {
 
 const getById = async (req, res, next) => {
   try {
+    const userId = req.user.id;
     // В req.params будет свойство contactId
-    const contact = await contacts.getContactById(req.params.contactId);
+    const contact = await contacts.getContactById(req.params.contactId, userId);
     // если искомый контакт есть(пришёл из getContactById)
     if (contact) {
       return res.json({
         status: "success",
-        code: 200,
+        code: HttpCode.OK,
         data: {
           contact,
         },
@@ -47,14 +50,18 @@ const getById = async (req, res, next) => {
 // создание контакта
 const create = async (req, res, next) => {
   try {
+    const userId = req.user.id;
     // req.body это представление отсылаемого/создаваемого обьекта
     // передаем req.body в addContact
-    const newContact = await contacts.addContact(req.body);
+    const newContact = await contacts.addContact({
+      ...req.body,
+      owner: userId,
+    });
 
     // res.status(201) обязательно
     return res.status(201).json({
       status: "success",
-      code: 201,
+      code: HttpCode.CREATED,
       data: {
         newContact,
       },
@@ -67,13 +74,14 @@ const create = async (req, res, next) => {
 // сюда приходит json или какие-то параметры
 const remove = async (req, res, next) => {
   try {
+    const userId = req.user.id;
     // В req.params будет свойство contactId
-    const contact = await contacts.removeContact(req.params.contactId);
+    const contact = await contacts.removeContact(req.params.contactId, userId);
     // если искомый контакт есть(пришёл из getContactById)
     if (contact) {
       return res.json({
         status: "success",
-        code: 200,
+        code: HttpCode.OK,
         message: "contact deleted",
         data: {
           contact,
@@ -97,17 +105,19 @@ const remove = async (req, res, next) => {
 // validate.updateContact - валидация (промежуточное ПО)
 const update = async (req, res, next) => {
   try {
+    const userId = req.user.id;
     // В req.params будет свойство contactId
     const contact = await contacts.updateContact(
       req.params.contactId,
-      req.body
+      req.body,
+      userId
     );
 
     // если искомый контакт есть(пришёл из getContactById)
     if (contact) {
       return res.json({
         status: "success",
-        code: 200,
+        code: HttpCode.OK,
         message: "Contact updated",
         data: {
           contact,

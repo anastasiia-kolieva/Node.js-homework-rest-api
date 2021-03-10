@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const { Schema, model } = mongoose;
+const { Schema, model, SchemaTypes } = require("mongoose");
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const contactSchema = new Schema(
   {
@@ -24,13 +24,18 @@ const contactSchema = new Schema(
       type: String,
       required: [true, "Set password"],
     },
-    token: {
-      type: String,
-      default: "",
+    owner: {
+      type: SchemaTypes.ObjectId,
+      // где их искать(связь)=(юзер)
+      // каждый пользователь будет создавать свои контакты
+      ref: "user",
     },
   },
-  { timestamps:true }
+  { timestamps: true }
 );
+
+// подключение mongoose-paginate-v2
+contactSchema.plugin(mongoosePaginate);
 
 const Contact = model("contact", contactSchema);
 
