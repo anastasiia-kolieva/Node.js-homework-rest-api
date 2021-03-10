@@ -22,7 +22,7 @@ const listContacts = async (
           ...(sortByDesc ? { [`${sortByDesc}`]: -1 } : {}),
         },
         // фильтр
-        select: filter ? filter.split('|') : '',
+        select: filter ? filter.split("|") : "",
         populate: {
           path: "owner",
           select: "name email",

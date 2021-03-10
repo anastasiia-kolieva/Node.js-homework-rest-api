@@ -91,8 +91,37 @@ const logout = async (req, res, next) => {
   });
 };
 
+const getInfoAboutCurrentUser = async (req, res, next) => {
+  const userId = req.user.id;
+  const token = req.user.token;
+  try {
+    const currentUser = await users.findById(userId);
+    // Если пользователя не сущестует вернуть Ошибку Unauthorized
+    if (!currentUser || !token) {
+      return res.status(HttpCode.UNAUTHORIZED).json({
+        status: "error",
+        code: HttpCode.UNAUTHORIZED,
+        data: "Unauthorized",
+        message: "Not authorized",
+      });
+    }
+
+    return res.status(HttpCode.OK).json({
+      status: "success",
+      code: HttpCode.OK,
+      user: {
+        email: currentUser.email,
+        subscription: currentUser.subscription,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   registration,
   login,
   logout,
+  getInfoAboutCurrentUser,
 };

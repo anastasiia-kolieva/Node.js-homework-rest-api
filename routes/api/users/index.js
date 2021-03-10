@@ -14,4 +14,7 @@ router.post("/auth/login", validate.login, usersControllers.login);
 // guard нужен потому что разлогиниться может только пользователь, который залогинился
 router.post("/auth/logout", guard, usersControllers.logout);
 
+// Создать ендпоинт /current
+router.get("/current", guard, usersControllers.getInfoAboutCurrentUser);
+
 module.exports = router;
