@@ -57,6 +57,7 @@ userSchema.pre("save", async function (next) {
 });
 
 // валидация пароля (статический метод)
+// возвращает промис
 userSchema.methods.validPassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };

@@ -47,15 +47,18 @@ const login = async (req, res, next) => {
     const { email, password } = req.body;
     // ищем пользователя по email
     const user = await users.findByEmail(email);
+    // ждем приходящего промиса из статического метода user.validPassword
+    const isValidPassport = await user.validPassword(password);
     // если пользователя с таким email нет,
     // и если пароль не валидный(валидация пароля (статический метод) validPassword в schemas/user)
-    if (!user || !user.validPassword(password))
+    if (!user || !isValidPassport) {
       return res.status(HttpCode.UNAUTHORIZED).json({
         status: "error",
         code: HttpCode.UNAUTHORIZED,
         data: "Unauthorized",
         message: "Invalid credentials",
       });
+    }
 
     // вытягиваем id пользователя
     const id = user._id;

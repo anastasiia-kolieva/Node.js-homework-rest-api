@@ -5,12 +5,12 @@ const getAll = async (req, res, next) => {
   try {
     const userId = req.user.id;
     // В responce массив обектов контактов распарсенный
-    const responce = await contacts.listContacts(userId);
+    const responce = await contacts.listContacts(userId, req.query);
     return res.json({
       status: "success",
       code: HttpCode.OK,
       data: {
-        responce,
+        ...responce,
       },
     });
   } catch (error) {
