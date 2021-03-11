@@ -1,4 +1,6 @@
 const express = require("express");
+// helmet для защиты приложения от перегрузки сервера
+const helmet = require("helmet");
 // логгер запросов
 const logger = require("morgan");
 const cors = require("cors");
@@ -11,11 +13,21 @@ const usersRouter = require("./routes/api/users/index");
 const app = express();
 
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
+
+// запуск helmet
+app.use(helmet());
 // запуск логгера
 app.use(logger(formatsLogger));
 // включён cors (кросcдоменные запросы)
 app.use(cors());
 app.use(express.json());
+
+const apiLimiter = rateLimit({
+  // если в течении 15 минут, сделаются больше чем 100 запросов, тогда нас просто откинет
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+});
+app.use("/api/", apiLimiter);
 
 // если придёт сюда на /api/contacts(по ТЗ), то иди в contactsRouter
 // всё что будет начинаться /api/contacts и после /api/contacts будет описано в файле contactsRouter
