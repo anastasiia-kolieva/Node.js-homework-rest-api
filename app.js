@@ -1,6 +1,7 @@
 const express = require("express");
 // helmet для защиты приложения от перегрузки сервера
 const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 // логгер запросов
 const logger = require("morgan");
 const cors = require("cors");
@@ -9,6 +10,8 @@ const cors = require("cors");
 const contactsRouter = require("./routes/api/contacts/index");
 // подключение Роутера Users
 const usersRouter = require("./routes/api/users/index");
+
+const { HttpCode } = require("./helpers/constants");
 
 const app = express();
 
@@ -26,6 +29,14 @@ const apiLimiter = rateLimit({
   // если в течении 15 минут, сделаются больше чем 100 запросов, тогда нас просто откинет
   windowMs: 15 * 60 * 1000,
   max: 100,
+  headers: (req, res, next) => {
+    return res.status(HttpCode.BAD_REQUEST).json({
+      status: "error",
+      code: HttpCode.BAD_REQUEST,
+      data: "Forbidden",
+      message: "Too many requests, please try again later",
+    });
+  },
 });
 app.use("/api/", apiLimiter);
 
